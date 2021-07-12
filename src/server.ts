@@ -26,7 +26,9 @@ app.get('/api/notes/overview', (req, res) => {
 });
 app.get('/api/notes/item', (req, res) => {
 	db_client
-		.query('SELECT * FROM notes WHERE id = $1 ORDER BY version DESC;', [req.query.id])
+		.query('SELECT * FROM notes WHERE id = $1 ORDER BY version DESC;', [
+			req.query.id,
+		])
 		.then((data: { rows: [] }) => res.send(data.rows));
 });
 app.use(express.static('public'));
