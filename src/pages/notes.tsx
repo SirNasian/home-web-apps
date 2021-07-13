@@ -7,9 +7,11 @@ import {
 	CircularProgress,
 	CssBaseline,
 	Divider,
+	Fab,
 	TextField,
 	Typography,
 } from '@material-ui/core';
+import { Home as HomeIcon } from '@material-ui/icons';
 import { ThemeProvider } from '@material-ui/core/styles';
 
 import moment from 'moment';
@@ -64,6 +66,13 @@ const NotesPage = () => {
 
 	return (
 		<ThemeProvider theme={theme_default}>
+			<Fab
+				href='/'
+				size='small'
+				style={{ position: 'absolute', top: '1.5rem', left: '1.5rem' }}
+			>
+				<HomeIcon />
+			</Fab>
 			<CssBaseline />
 			<Container maxWidth='xs'>
 				<Box style={{ padding: '1rem 0' }}>
