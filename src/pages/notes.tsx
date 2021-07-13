@@ -3,14 +3,15 @@ import ReactDom from 'react-dom';
 
 import {
 	Box,
-	Button,
 	Container,
 	CssBaseline,
 	Divider,
+	Fab,
 	TextField,
 	Typography,
 } from '@material-ui/core';
-import { ThemeProvider, useTheme } from '@material-ui/core/styles';
+import { Add as AddIcon } from '@material-ui/icons';
+import { ThemeProvider } from '@material-ui/core/styles';
 
 import { NotesOverview, OverviewItem } from '../components/NotesOverview';
 
@@ -20,12 +21,9 @@ const NotesPage = () => {
 	const [searchText, setSearchText] = React.useState<string>('');
 	const [overviewItems, setOverviewItems] = React.useState<OverviewItem[]>([]);
 
-	const spacing = useTheme().spacing();
 	const style_scrollbox = {
 		height: 'calc(100vh - 10rem)',
 		overflow: 'auto',
-		paddingLeft: spacing,
-		paddingRight: spacing,
 	};
 
 	React.useEffect(() => {
@@ -39,35 +37,30 @@ const NotesPage = () => {
 		<ThemeProvider theme={theme_default}>
 			<CssBaseline />
 			<Container maxWidth='xs'>
-				<Box style={{ paddingTop: spacing * 2, paddingBottom: spacing * 2 }}>
+				<Box style={{ padding: '1rem 0' }}>
 					<Typography style={{ textAlign: 'center' }} variant='h3'>
 						NOTES
 					</Typography>
 					<Divider />
-					<Box style={{ padding: spacing }}>
-						<TextField
-							fullWidth
-							label='Search'
-							onChange={(event) => setSearchText(event.target.value)}
-							size='small'
-							value={searchText}
-							variant='outlined'
-						/>
-					</Box>
+					<TextField
+						fullWidth
+						label='Search'
+						onChange={(event) => setSearchText(event.target.value)}
+						size='small'
+						style={{ margin: '0.5rem 0' }}
+						value={searchText}
+						variant='outlined'
+					/>
 					<Box style={style_scrollbox}>
 						<NotesOverview items={overviewItems} searchText={searchText} />
 					</Box>
 				</Box>
-				<Box position='absolute' bottom={spacing * 2} right={spacing * 2}>
-					<Button
-						color='primary'
-						disableElevation
-						size='large'
-						variant='contained'
-					>
-						ADD NOTE
-					</Button>
-				</Box>
+				<Fab
+					color='primary'
+					style={{ position: 'absolute', right: '1rem', bottom: '1rem' }}
+				>
+					<AddIcon />
+				</Fab>
 			</Container>
 		</ThemeProvider>
 	);
