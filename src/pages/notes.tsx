@@ -14,14 +14,30 @@ import {
 import { Add as AddIcon } from '@material-ui/icons';
 import { ThemeProvider } from '@material-ui/core/styles';
 
+import moment from 'moment';
+
 import { NotesOverview, OverviewItem } from '../components/NotesOverview';
 
 import { theme_default } from '../themes';
 
+interface Note extends OverviewItem {
+	version: number;
+	content: string;
+}
+
+const createEmptyNote = (): Note => ({
+	id: 'new',
+	version: 1,
+	title: '',
+	content: '',
+	date: moment().format(),
+});
+
 const NotesPage = () => {
 	const [searchText, setSearchText] = React.useState<string>('');
 	const [overviewLoading, setOverviewLoading] = React.useState<boolean>(true);
-	const [overviewItems, setOverviewItems] = React.useState<OverviewItem[]>([]);
+	const [notes, setNotes] = React.useState<Note[]>([]);
+	const [selectedNote, setSelectedNote] = React.useState<Note>(undefined);
 
 	const style_scrollbox = {
 		height: 'calc(100vh - 10rem)',
@@ -34,13 +50,13 @@ const NotesPage = () => {
 			.fetch('/api/notes/overview')
 			.then((res) => res.json())
 			.then((data) => {
-				setOverviewItems(data);
+				setNotes(data);
 				setOverviewLoading(false);
 			});
 	}, [overviewLoading, setOverviewLoading]);
 
 	const showLoader = overviewLoading;
-	const showSearch = !showLoader;
+	const showSearch = !showLoader && !selectedNote;
 
 	return (
 		<ThemeProvider theme={theme_default}>
@@ -73,17 +89,20 @@ const NotesPage = () => {
 							>
 								<CircularProgress />
 							</Box>
-						) : (
-							<NotesOverview items={overviewItems} searchText={searchText} />
+						) : selectedNote ? null : (
+							<NotesOverview items={notes} searchText={searchText} />
 						)}
 					</Box>
 				</Box>
-				<Fab
-					color='primary'
-					style={{ position: 'absolute', right: '1rem', bottom: '1rem' }}
-				>
-					<AddIcon />
-				</Fab>
+				{selectedNote ? null : (
+					<Fab
+						color='primary'
+						style={{ position: 'absolute', right: '1rem', bottom: '1rem' }}
+						onClick={() => setSelectedNote(createEmptyNote())}
+					>
+						<AddIcon />
+					</Fab>
+				)}
 			</Container>
 		</ThemeProvider>
 	);
