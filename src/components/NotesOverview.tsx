@@ -20,12 +20,12 @@ export interface OverviewItem {
 
 export const NotesOverview = ({
 	items,
-	onSelectNote,
 	searchText,
+	onSelectNote,
 }: {
 	items: OverviewItem[];
-	onSelectNote: (id: string) => void;
 	searchText: string;
+	onSelectNote: (id: string) => void;
 }): JSX.Element => (
 	<React.Fragment>
 		<Grid container spacing={1}>
@@ -35,29 +35,40 @@ export const NotesOverview = ({
 				)
 				.map((item) => (
 					<Grid item xs={12} key={item.id}>
-						<NotesOverviewCard title={item.title} date={item.date} />
+						<NotesOverviewCard
+							id={item.id}
+							title={item.title}
+							date={item.date}
+							onSelectNote={onSelectNote}
+						/>
 					</Grid>
 				))}
 		</Grid>
 		<Fab
 			color='primary'
 			style={{ position: 'absolute', right: '1rem', bottom: '1rem' }}
+			variant='extended'
 			onClick={() => onSelectNote('')}
 		>
-			<AddIcon />
+			<AddIcon style={{ marginRight: '0.2rem' }} />
+			NEW
 		</Fab>
 	</React.Fragment>
 );
 
 const NotesOverviewCard = ({
+	id,
 	title,
 	date,
+	onSelectNote,
 }: {
+	id: string;
 	title: string;
 	date: string;
+	onSelectNote: (id: string) => void;
 }) => (
 	<Card raised={false}>
-		<CardActionArea>
+		<CardActionArea onClick={() => onSelectNote(id)}>
 			<Box px={2} py={1}>
 				<Typography variant='h6'>{title}</Typography>
 				<Typography variant='body2'>

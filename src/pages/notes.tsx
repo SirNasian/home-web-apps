@@ -94,7 +94,13 @@ const NotesPage = () => {
 								<CircularProgress />
 							</Box>
 						) : selectedNote ? (
-							null
+							<NotesEditor
+								id={selectedNote.id}
+								title={selectedNote.title}
+								content={selectedNote.content}
+								onCancel={() => setSelectedNote(undefined)}
+								onSave={() => alert('NOT YET IMPLEMENTED')}
+							/>
 						) : (
 							<NotesOverview
 								items={notes}
