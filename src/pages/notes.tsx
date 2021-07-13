@@ -11,7 +11,7 @@ import {
 	TextField,
 	Typography,
 } from '@material-ui/core';
-import { Home as HomeIcon } from '@material-ui/icons';
+import { Home as HomeIcon, Refresh as RefreshIcon } from '@material-ui/icons';
 import { ThemeProvider } from '@material-ui/core/styles';
 
 import moment from 'moment';
@@ -36,7 +36,7 @@ const createEmptyNote = (): Note => ({
 
 const NotesPage = () => {
 	const [notes, setNotes] = React.useState<Note[]>([]);
-	const [overviewLoading, setOverviewLoading] = React.useState<boolean>(true);
+	const [notesLoading, setNotesLoading] = React.useState<boolean>(true);
 	const [searchText, setSearchText] = React.useState<string>('');
 	const [selectedNote, setSelectedNote] = React.useState<Note>(undefined);
 
@@ -46,11 +46,11 @@ const NotesPage = () => {
 			.then((res) => res.json())
 			.then((data) => {
 				setNotes(data);
-				setOverviewLoading(false);
+				setNotesLoading(false);
 			});
-	}, [overviewLoading, setOverviewLoading]);
+	}, [notesLoading, setNotesLoading]);
 
-	const showLoader = overviewLoading;
+	const showLoader = notesLoading;
 	const showSearch = !showLoader && !selectedNote;
 
 	const style_scrollbox = {
@@ -72,6 +72,13 @@ const NotesPage = () => {
 				style={{ position: 'absolute', top: '1.5rem', left: '1.5rem' }}
 			>
 				<HomeIcon />
+			</Fab>
+			<Fab
+				size='small'
+				style={{ position: 'absolute', top: '1.5rem', right: '1.5rem' }}
+				onClick={() => setNotesLoading(true)}
+			>
+				<RefreshIcon />
 			</Fab>
 			<CssBaseline />
 			<Container maxWidth='xs'>
