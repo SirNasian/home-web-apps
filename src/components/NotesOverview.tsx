@@ -1,6 +1,14 @@
 import React from 'react';
 
-import { Box, Card, CardActionArea, Grid, Typography } from '@material-ui/core';
+import {
+	Box,
+	Card,
+	CardActionArea,
+	Fab,
+	Grid,
+	Typography,
+} from '@material-ui/core';
+import { Add as AddIcon } from '@material-ui/icons';
 
 import moment from 'moment';
 
@@ -12,22 +20,33 @@ export interface OverviewItem {
 
 export const NotesOverview = ({
 	items,
+	onSelectNote,
 	searchText,
 }: {
 	items: OverviewItem[];
+	onSelectNote: (id: string) => void;
 	searchText: string;
 }): JSX.Element => (
-	<Grid container spacing={1}>
-		{items
-			.filter((item: OverviewItem) =>
-				item.title.toUpperCase().includes(searchText.toUpperCase())
-			)
-			.map((item) => (
-				<Grid item xs={12} key={item.id}>
-					<NotesOverviewCard title={item.title} date={item.date} />
-				</Grid>
-			))}
-	</Grid>
+	<React.Fragment>
+		<Grid container spacing={1}>
+			{items
+				.filter((item: OverviewItem) =>
+					item.title.toUpperCase().includes(searchText.toUpperCase())
+				)
+				.map((item) => (
+					<Grid item xs={12} key={item.id}>
+						<NotesOverviewCard title={item.title} date={item.date} />
+					</Grid>
+				))}
+		</Grid>
+		<Fab
+			color='primary'
+			style={{ position: 'absolute', right: '1rem', bottom: '1rem' }}
+			onClick={() => onSelectNote('')}
+		>
+			<AddIcon />
+		</Fab>
+	</React.Fragment>
 );
 
 const NotesOverviewCard = ({

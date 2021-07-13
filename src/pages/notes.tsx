@@ -7,16 +7,15 @@ import {
 	CircularProgress,
 	CssBaseline,
 	Divider,
-	Fab,
 	TextField,
 	Typography,
 } from '@material-ui/core';
-import { Add as AddIcon } from '@material-ui/icons';
 import { ThemeProvider } from '@material-ui/core/styles';
 
 import moment from 'moment';
 
 import { NotesOverview, OverviewItem } from '../components/NotesOverview';
+import { NotesEditor } from '../components/NotesEditor';
 
 import { theme_default } from '../themes';
 
@@ -34,16 +33,10 @@ const createEmptyNote = (): Note => ({
 });
 
 const NotesPage = () => {
-	const [searchText, setSearchText] = React.useState<string>('');
-	const [overviewLoading, setOverviewLoading] = React.useState<boolean>(true);
 	const [notes, setNotes] = React.useState<Note[]>([]);
+	const [overviewLoading, setOverviewLoading] = React.useState<boolean>(true);
+	const [searchText, setSearchText] = React.useState<string>('');
 	const [selectedNote, setSelectedNote] = React.useState<Note>(undefined);
-
-	const style_scrollbox = {
-		height: 'calc(100vh - 10rem)',
-		overflow: 'auto',
-		padding: '0 0.5rem',
-	};
 
 	React.useEffect(() => {
 		window
@@ -57,6 +50,17 @@ const NotesPage = () => {
 
 	const showLoader = overviewLoading;
 	const showSearch = !showLoader && !selectedNote;
+
+	const style_scrollbox = {
+		height: `calc(100vh - ${showSearch ? 10 : 6}rem)`,
+		overflow: 'auto',
+		padding: '0 0.5rem',
+	};
+
+	const handleSelectNote = (id: string) => {
+		const note = notes.find((note) => id == note.id);
+		setSelectedNote(note ? note : createEmptyNote());
+	};
 
 	return (
 		<ThemeProvider theme={theme_default}>
@@ -89,20 +93,17 @@ const NotesPage = () => {
 							>
 								<CircularProgress />
 							</Box>
-						) : selectedNote ? null : (
-							<NotesOverview items={notes} searchText={searchText} />
+						) : selectedNote ? (
+							null
+						) : (
+							<NotesOverview
+								items={notes}
+								onSelectNote={handleSelectNote}
+								searchText={searchText}
+							/>
 						)}
 					</Box>
 				</Box>
-				{selectedNote ? null : (
-					<Fab
-						color='primary'
-						style={{ position: 'absolute', right: '1rem', bottom: '1rem' }}
-						onClick={() => setSelectedNote(createEmptyNote())}
-					>
-						<AddIcon />
-					</Fab>
-				)}
 			</Container>
 		</ThemeProvider>
 	);
