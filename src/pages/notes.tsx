@@ -16,15 +16,11 @@ import { ThemeProvider } from '@material-ui/core/styles';
 
 import moment from 'moment';
 
-import { NotesOverview, OverviewItem } from '../components/NotesOverview';
+import { NotesOverview } from '../components/NotesOverview';
 import { NotesEditor } from '../components/NotesEditor';
+import { Note } from '../models/Note';
 
 import { theme_default } from '../themes';
-
-interface Note extends OverviewItem {
-	version: number;
-	content: string;
-}
 
 const createEmptyNote = (): Note => ({
 	id: 'new',

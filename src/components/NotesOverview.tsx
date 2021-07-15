@@ -12,11 +12,7 @@ import { Add as AddIcon } from '@material-ui/icons';
 
 import moment from 'moment';
 
-export interface OverviewItem {
-	id: string;
-	title: string;
-	date: string;
-}
+import { OverviewItem } from '../models/OverviewItem';
 
 export const NotesOverview = ({
 	items,
