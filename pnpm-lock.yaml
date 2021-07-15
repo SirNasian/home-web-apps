@@ -10,6 +10,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^4.28.2
   '@typescript-eslint/parser': ^4.28.2
   '@webpack-cli/generators': ^2.2.0
+  body-parser: ^1.19.0
   css-loader: ^5.2.6
   csstype: ^3.0.8
   eslint: ^7.30.0
@@ -24,6 +25,7 @@ specifiers:
   style-loader: ^3.0.0
   ts-loader: ^9.2.3
   typescript: ^4.3.5
+  uuid: ^8.3.2
   webpack: ^5.44.0
   webpack-cli: ^4.7.2
 
@@ -31,12 +33,14 @@ dependencies:
   '@material-ui/core': 4.12.1_28c0df05a9559c3217649c6005b51123
   '@material-ui/icons': 4.11.2_fa44b91e6d106cc103212df8a34ca9a7
   '@material-ui/styles': 4.11.4_28c0df05a9559c3217649c6005b51123
+  body-parser: 1.19.0
   csstype: 3.0.8
   express: 4.17.1
   moment: 2.29.1
   pg: 8.6.0
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
+  uuid: 8.3.2
 
 devDependencies:
   '@types/express': 4.17.13
@@ -4583,6 +4587,11 @@ packages:
   /utils-merge/1.0.1:
     resolution: {integrity: sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=}
     engines: {node: '>= 0.4.0'}
+    dev: false
+
+  /uuid/8.3.2:
+    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    hasBin: true
     dev: false
 
   /v8-compile-cache/2.3.0:
