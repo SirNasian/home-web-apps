@@ -20,15 +20,25 @@ export const NotesEditor = ({
 	const [noteContent, setNoteContent] = React.useState<string>(content);
 	const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
 	const view_height = document.documentElement.clientHeight;
-	const rows = Math.floor((view_height - 11 * rem + 21) / (rem + 3));
+	const rows = Math.floor((view_height - 15 * rem + 21) / (rem + 3));
 	return (
 		<React.Fragment>
 			<TextField
 				fullWidth
+				label='Title'
+				size='small'
+				style={{ marginTop: '1rem' }}
+				value={noteTitle}
+				variant='outlined'
+				onChange={(event) => setNoteTitle(event.target.value)}
+			/>
+			<TextField
+				fullWidth
+				label='Content'
 				multiline
 				rows={rows}
 				size='small'
-				style={{ margin: '0.5rem 0' }}
+				style={{ margin: '1rem 0' }}
 				value={noteContent}
 				variant='outlined'
 				onChange={(event) => setNoteContent(event.target.value)}
