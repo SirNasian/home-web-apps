@@ -22,22 +22,23 @@ import { Note } from '../models/Note';
 
 import { theme_default } from '../themes';
 
-const createEmptyNote = (): Note => ({
-	id: 'new',
+const NOTE_EMPTY: Note = {
+	id: '',
 	version: 1,
 	title: '',
 	content: '',
 	date: moment().format(),
-});
+};
 
 const NotesPage = () => {
 	const [notes, setNotes] = React.useState<Note[]>([]);
 	const [notesLoading, setNotesLoading] = React.useState<boolean>(true);
 	const [searchText, setSearchText] = React.useState<string>('');
-	const [selectedNote, setSelectedNote] = React.useState<Note>(undefined);
+	const [selectedID, setSelectedID] = React.useState<string>(undefined);
 
 	const showLoader = notesLoading;
-	const showSearch = !showLoader && !selectedNote;
+	const showSearch = !showLoader && (selectedID === undefined);
+	const selectedNote = (selectedID === '') ? NOTE_EMPTY : notes.find((note) => note.id == selectedID);
 
 	const style_scrollbox = {
 		height: `calc(100vh - ${showSearch ? 10 : 6}rem)`,
@@ -45,9 +46,10 @@ const NotesPage = () => {
 		padding: '0 0.5rem',
 	};
 
-	const handleSelectNote = (id: string) => {
-		const note = notes.find((note) => id == note.id);
-		setSelectedNote(note ? note : createEmptyNote());
+	const handleNoteSave = (id: string, title: string, content: string) => {
+		saveNote(id, title, content)
+			.then((idNew) => setSelectedID(idNew))
+			.then(() => loadNotes());
 	};
 
 	const loadNotes = (): Promise<boolean> => {
@@ -62,7 +64,28 @@ const NotesPage = () => {
 			});
 	};
 
-	React.useEffect(() => { loadNotes() }, []);
+	const saveNote = (
+		id: string,
+		title: string,
+		content: string
+	): Promise<string> => {
+		return window
+			.fetch('/api/notes/item', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					id: id,
+					title: title,
+					content: content,
+				}),
+			})
+			.then((res) => res.json())
+			.then((json) => json.id);
+	};
+
+	React.useEffect(() => {
+		loadNotes();
+	}, []);
 
 	return (
 		<ThemeProvider theme={theme_default}>
@@ -114,13 +137,13 @@ const NotesPage = () => {
 								id={selectedNote.id}
 								title={selectedNote.title}
 								content={selectedNote.content}
-								onCancel={() => setSelectedNote(undefined)}
-								onSave={() => alert('NOT YET IMPLEMENTED')}
+								onCancel={() => setSelectedID(undefined)}
+								onSave={handleNoteSave}
 							/>
 						) : (
 							<NotesOverview
 								items={notes}
-								onSelectNote={handleSelectNote}
+								onSelectNote={(id) => setSelectedID(id)}
 								searchText={searchText}
 							/>
 						)}
