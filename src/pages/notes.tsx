@@ -36,16 +36,6 @@ const NotesPage = () => {
 	const [searchText, setSearchText] = React.useState<string>('');
 	const [selectedNote, setSelectedNote] = React.useState<Note>(undefined);
 
-	React.useEffect(() => {
-		window
-			.fetch('/api/notes/overview')
-			.then((res) => res.json())
-			.then((data) => {
-				setNotes(data);
-				setNotesLoading(false);
-			});
-	}, [notesLoading, setNotesLoading]);
-
 	const showLoader = notesLoading;
 	const showSearch = !showLoader && !selectedNote;
 
@@ -59,6 +49,20 @@ const NotesPage = () => {
 		const note = notes.find((note) => id == note.id);
 		setSelectedNote(note ? note : createEmptyNote());
 	};
+
+	const loadNotes = (): Promise<boolean> => {
+		setNotesLoading(true);
+		return window
+			.fetch('/api/notes/overview')
+			.then((res) => res.json())
+			.then((data) => {
+				setNotes(data);
+				setNotesLoading(false);
+				return true;
+			});
+	};
+
+	React.useEffect(() => { loadNotes() }, []);
 
 	return (
 		<ThemeProvider theme={theme_default}>
