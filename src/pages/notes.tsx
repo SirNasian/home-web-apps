@@ -194,7 +194,12 @@ const NotesPage = () => {
 					setToast({ ...toast, open: reason === 'clickaway' })
 				}
 			>
-				<Alert severity={toast.severity}>{toast.content}</Alert>
+				<Alert
+					severity={toast.severity}
+					onClick={() => setToast({ ...toast, open: false })}
+				>
+					{toast.content}
+				</Alert>
 			</Snackbar>
 		</ThemeProvider>
 	);
