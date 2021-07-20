@@ -69,6 +69,7 @@ const NotesPage = () => {
 		saveNote(id, title, content)
 			.then((idNew) => setSelectedID(idNew))
 			.then(() => loadNotes())
+			.then((notes) => setNotes(notes))
 			.then(() => popupToast('Saved Successfully!', 'success'))
 			.catch((err) => popupToast(err.message, 'error'))
 			.finally(() => setNotesLoading(false));
@@ -77,7 +78,7 @@ const NotesPage = () => {
 	const handleRefresh = () => {
 		setNotesLoading(true);
 		loadNotes()
-			.then((data) => setNotes(data))
+			.then((notes) => setNotes(notes))
 			.then(() => popupToast('Notes Reloaded!', 'success'))
 			.catch((err) => popupToast(err.message, 'error'))
 			.finally(() => setNotesLoading(false));
@@ -118,7 +119,9 @@ const NotesPage = () => {
 
 	React.useEffect(() => {
 		setNotesLoading(true);
-		loadNotes().then(() => setNotesLoading(false));
+		loadNotes()
+			.then((notes) => setNotes(notes))
+			.then(() => setNotesLoading(false));
 	}, []);
 
 	return (
