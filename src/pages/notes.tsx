@@ -37,8 +37,11 @@ const NotesPage = () => {
 	const [selectedID, setSelectedID] = React.useState<string>(undefined);
 
 	const showLoader = notesLoading;
-	const showSearch = !showLoader && (selectedID === undefined);
-	const selectedNote = (selectedID === '') ? NOTE_EMPTY : notes.find((note) => note.id == selectedID);
+	const showSearch = !showLoader && selectedID === undefined;
+	const selectedNote =
+		selectedID === ''
+			? NOTE_EMPTY
+			: notes.find((note) => note.id == selectedID);
 
 	const style_scrollbox = {
 		height: `calc(100vh - ${showSearch ? 10 : 6}rem)`,
@@ -99,7 +102,7 @@ const NotesPage = () => {
 			<Fab
 				size='small'
 				style={{ position: 'absolute', top: '1.5rem', right: '1.5rem' }}
-				onClick={() => setNotesLoading(true)}
+				onClick={() => loadNotes()}
 			>
 				<RefreshIcon />
 			</Fab>
