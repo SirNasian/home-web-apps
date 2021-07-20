@@ -8,9 +8,11 @@ import {
 	CssBaseline,
 	Divider,
 	Fab,
+	Snackbar,
 	TextField,
 	Typography,
 } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import { Home as HomeIcon, Refresh as RefreshIcon } from '@material-ui/icons';
 import { ThemeProvider } from '@material-ui/core/styles';
 
@@ -22,6 +24,12 @@ import { Note } from '../models/Note';
 
 import { theme_default } from '../themes';
 
+interface Toast {
+	open: boolean;
+	content: string;
+	severity: 'error' | 'warning' | 'info' | 'success';
+}
+
 const NOTE_EMPTY: Note = {
 	id: '',
 	version: 1,
@@ -30,11 +38,18 @@ const NOTE_EMPTY: Note = {
 	date: moment().format(),
 };
 
+const TOAST_DEFAULT: Toast = {
+	open: false,
+	content: '',
+	severity: 'info',
+};
+
 const NotesPage = () => {
 	const [notes, setNotes] = React.useState<Note[]>([]);
 	const [notesLoading, setNotesLoading] = React.useState<boolean>(true);
 	const [searchText, setSearchText] = React.useState<string>('');
 	const [selectedID, setSelectedID] = React.useState<string>(undefined);
+	const [toast, setToast] = React.useState<Toast>(TOAST_DEFAULT);
 
 	const showLoader = notesLoading;
 	const showSearch = !showLoader && selectedID === undefined;
@@ -50,21 +65,26 @@ const NotesPage = () => {
 	};
 
 	const handleNoteSave = (id: string, title: string, content: string) => {
+		setNotesLoading(true);
 		saveNote(id, title, content)
 			.then((idNew) => setSelectedID(idNew))
-			.then(() => loadNotes());
+			.then(() => loadNotes())
+			.then(() => popupToast('Saved Successfully!', 'success'))
+			.catch((err) => popupToast(err.message, 'error'))
+			.finally(() => setNotesLoading(false));
 	};
 
-	const loadNotes = (): Promise<boolean> => {
+	const handleRefresh = () => {
 		setNotesLoading(true);
-		return window
-			.fetch('/api/notes/overview')
-			.then((res) => res.json())
-			.then((data) => {
-				setNotes(data);
-				setNotesLoading(false);
-				return true;
-			});
+		loadNotes()
+			.then((data) => setNotes(data))
+			.then(() => popupToast('Notes Reloaded!', 'success'))
+			.catch((err) => popupToast(err.message, 'error'))
+			.finally(() => setNotesLoading(false));
+	};
+
+	const loadNotes = (): Promise<Note[]> => {
+		return window.fetch('/api/notes/overview').then((res) => res.json());
 	};
 
 	const saveNote = (
@@ -86,8 +106,19 @@ const NotesPage = () => {
 			.then((json) => json.id);
 	};
 
+	const popupToast = (
+		content: string,
+		severity: 'error' | 'warning' | 'info' | 'success'
+	) =>
+		setToast({
+			open: true,
+			content: content,
+			severity: severity,
+		});
+
 	React.useEffect(() => {
-		loadNotes();
+		setNotesLoading(true);
+		loadNotes().then(() => setNotesLoading(false));
 	}, []);
 
 	return (
@@ -102,7 +133,7 @@ const NotesPage = () => {
 			<Fab
 				size='small'
 				style={{ position: 'absolute', top: '1.5rem', right: '1.5rem' }}
-				onClick={() => loadNotes()}
+				onClick={handleRefresh}
 			>
 				<RefreshIcon />
 			</Fab>
@@ -153,6 +184,15 @@ const NotesPage = () => {
 					</Box>
 				</Box>
 			</Container>
+			<Snackbar
+				open={toast.open}
+				autoHideDuration={3000}
+				onClose={(event, reason) =>
+					setToast({ ...toast, open: reason === 'clickaway' })
+				}
+			>
+				<Alert severity={toast.severity}>{toast.content}</Alert>
+			</Snackbar>
 		</ThemeProvider>
 	);
 };
