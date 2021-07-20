@@ -24,6 +24,7 @@ export const NotesEditor = ({
 	return (
 		<React.Fragment>
 			<TextField
+				error={!noteTitle}
 				fullWidth
 				label='Title'
 				size='small'
@@ -33,6 +34,7 @@ export const NotesEditor = ({
 				onChange={(event) => setNoteTitle(event.target.value)}
 			/>
 			<TextField
+				error={!noteContent}
 				fullWidth
 				label='Content'
 				multiline
@@ -54,6 +56,7 @@ export const NotesEditor = ({
 			</Fab>
 			<Fab
 				color='primary'
+				disabled={!noteTitle || !noteContent}
 				style={{ position: 'absolute', right: '1rem', bottom: '1rem' }}
 				variant='extended'
 				onClick={() => onSave(id, noteTitle, noteContent)}
